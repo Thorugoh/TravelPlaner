@@ -8,14 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var viewModel = TravelViewModel()
+    @State private var showingAddTravel = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView {
+            List {
+                ForEach(viewModel.travels) { travel in
+                    VStack(alignment: .leading) {
+                        Text(travel.title).font(.headline)
+                        Text("\(travel.startDate.formatted()) - \(travel.endDate.formatted())")
+                                                    .font(.subheadline)
+                    }
+                }
+            }
+        }.navigationTitle("My Travels").toolbar {
+            Button(action: {
+                showingAddTravel = true
+            }) {
+                Image(systemName: "plus")
+            }
+        }.sheet(isPresented: $showingAddTravel) {
+            AddTravelView(viewModel: viewModel)
         }
-        .padding()
     }
 }
 
